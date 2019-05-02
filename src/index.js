@@ -1,8 +1,11 @@
-import { app, BrowserWindow, ipcMain, Tray } from 'electron';
+import { app, BrowserWindow, ipcMain, Tray, Menu } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 // import { enableLiveReload } from 'electron-compile';
+import log from 'electron-log';
 import path from 'path';
+import fixPath from 'fix-path';
 
+fixPath();
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -19,9 +22,14 @@ if (isDevMode) {
 
 const createTray = () => {
   tray = new Tray(path.join(__dirname, 'logo.png'));
+  let menu = Menu.buildFromTemplate([
+    { role: 'quit' }
+  ]);
   // tray.setHighlightMode('never');
 
-  tray.on('right-click', toggleWindow);
+  tray.on('right-click', (event) => {
+    tray.popUpContextMenu(menu);
+  });
   tray.on('double-click', toggleWindow);
   tray.on('click', function (event) {
     toggleWindow();

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Grid, withStyles } from '@material-ui/core';
 import { Assignment, Refresh, Add } from '@material-ui/icons';
 import { connect } from 'react-redux';
+import prompt from 'electron-prompt';
 
 import { readTodotxt, addTodoToProject, addTodo, addProject } from '../redux/actions';
 import TodoList from './TodoList';
@@ -35,11 +36,27 @@ class Main extends Component {
 		}
 
 		this.handleSelect = this.handleSelect.bind(this);
+		this.handleNewProject = this.handleNewProject.bind(this);
 	}
 
 	handleSelect(id) {
-		console.log(id);
 		this.setState({ selected: id });
+	}
+
+	handleNewProject() {
+		prompt({
+	    title: 'New Project',
+	    label: 'Project name:',
+	    value: 'another-project'
+		})
+		.then((r) => {
+	    if(r === null) {
+	      console.error('Cancelled new project');
+	    } else {
+	      this.props.addProject(r);	
+	    }
+		})
+		.catch(console.error);
 	}
 
 	render() {
@@ -53,7 +70,7 @@ class Main extends Component {
 							icon={Assignment} 
 							fontSize='default' 
 							className={classes.project}
-							onClick={() => { this.props.addProject("another project"); }}
+							onClick={this.handleNewProject}
 						/>
 					</Grid>
 					<Grid item>

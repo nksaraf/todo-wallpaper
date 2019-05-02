@@ -4,8 +4,11 @@ import { types } from './actions';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import { PythonShell } from 'python-shell';
 import child_process from 'child_process';
 import { TodoTxt, TodoTxtItem } from 'jstodotxt';
+import log from 'electron-log';
+import electron from 'electron';
 
 // const initialState = {
 // 	scoreboard: {},
@@ -33,11 +36,8 @@ const saveTodotxt = (todos) => {
     }
   }
   fs.writeFile(TODOTXT, TodoTxt.render(flat_todos), (err) => {
-    child_process.exec(
-      'python3 ' + path.join(os.homedir(), 'workspace', 'todo_wallpaper', 'main.py'), 
-      (error, stdout, stderr) => {
-        console.log(stdout);
-      });
+    child_process.execFile(path.join(electron.remote.app.getAppPath(), 'todo_wallpaper', 'wallpaper.sh'), 
+      (error, stdout, stderr) => { if (error) log.error(error); });
   });
 }
 
@@ -132,6 +132,33 @@ const editTodo = (projects, location, text) => {
   return todos;
 }
 
+const incompleteTodo = (projects, location) => {
+  let todos = Object.assign({}, projects);
+  if (location != null) {
+    todos[location.project][location.index].complete = false;
+    todos[location.project][location.index].completed = null;
+  }
+  saveTodotxt(todos);
+  return todos;
+}
+
+const completeTodo = (projects, location) => {
+  let todos = Object.assign({}, projects);
+  if (location != null) {
+    todos[location.project][location.index].complete = true;
+    todos[location.project][location.index].completed = new Date();
+  }
+  saveTodotxt(todos);
+  return todos;
+}
+
+const deleteProject = (projects, project) => {
+  let todos = Object.assign({}, projects);
+  delete todos[project];
+  saveTodotxt(todos);
+  return todos;
+}
+
 function todos(state={ default: [] }, action) {
 	console.log(action);
 
@@ -154,6 +181,15 @@ function todos(state={ default: [] }, action) {
 
     case types.EDIT_TODO:
       return editTodo(state, searchTodoById(state, action.payload.todo_id), action.payload.text);
+
+    case types.COMPLETE_TODO:
+      return completeTodo(state, searchTodoById(state, action.payload.todo_id));
+
+    case types.INCOMPLETE_TODO:
+      return incompleteTodo(state, searchTodoById(state, action.payload.todo_id));
+
+    case types.DELETE_PROJECT:
+      return deleteProject(state, action.payload.project)
 
     default:
       return state;

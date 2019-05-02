@@ -1,6 +1,6 @@
 {
   "name": "todo",
-  "productName": "todo",
+  "productName": "Todo",
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": "src/index.js",
@@ -29,10 +29,14 @@
         ]
       },
       "electronPackagerConfig": {
-        "packageManager": "npm"
+        "packageManager": "npm",
+        "icon": "./src/logo.icns",
+        "extendInfo": {
+          "LSUIElement": 1
+        }
       },
       "electronWinstallerConfig": {
-        "name": "todo"
+        "name": "Todo"
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
@@ -41,24 +45,26 @@
         "name": ""
       },
       "windowsStoreConfig": {
-        "packageName": "",
-        "name": "todo"
+        "packageName": "Todo",
+        "name": "Todo"
       }
     }
   },
   "dependencies": {
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
-    "babel-core": "^6.26.3",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "circular-std": "^1.0.0",
     "classnames": "^2.2.6",
     "electron-compile": "^6.4.4",
     "electron-devtools-installer": "^2.2.4",
+    "electron-log": "^3.0.5",
+    "electron-prompt": "^1.3.0",
     "electron-reload": "^1.4.0",
     "electron-squirrel-startup": "^1.0.0",
+    "fix-path": "^2.1.0",
     "jstodotxt": "^0.7.0",
     "prop-types": "^15.7.2",
+    "python-shell": "^1.0.7",
     "react": "^16.8.3",
     "react-dom": "^16.8.6",
     "react-hot-loader": "^3.1.3",
@@ -77,6 +83,8 @@
     "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.12.4"
+    "eslint-plugin-react": "^7.12.4",
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0"
   }
 }

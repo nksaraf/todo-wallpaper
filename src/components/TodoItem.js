@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { InputBase, ClickAwayListener, Grid, Checkbox, withStyles } from '@material-ui/core';
+import { InputBase, ClickAwayListener, Typography, Grid, Checkbox, withStyles } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import { connect } from 'react-redux';
 
-import { editTodo, deleteTodo } from '../redux/actions';
+import { editTodo, deleteTodo, completeTodo, incompleteTodo } from '../redux/actions';
 import PillButton from './PillButton';
 
 const styles = theme => ({
@@ -21,9 +21,12 @@ const styles = theme => ({
 	delete: {
 		padding: 4
 	},
-	input: {
+	text: {
 		fontFamily: 'CircularStd',
 		fontSize: 14
+	},
+	through: {
+		textDecoration: 'line-through'
 	}
 });
 
@@ -37,6 +40,7 @@ class TodoItem extends Component {
 
 		this.setHover = this.setHover.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+		this.handleComplete = this.handleComplete.bind(this);
 	}
 
 	setHover(hover) {
@@ -45,6 +49,14 @@ class TodoItem extends Component {
 
 	handleChange(event) {
 		this.setState({ text: event.target.value });
+	}
+
+	handleComplete(event, checked) {
+		if (checked) {
+			this.props.completeTodo(this.props.todo.id);
+		} else {
+			this.props.incompleteTodo(this.props.todo.id);
+		}
 	}
 
 	render() {
@@ -62,25 +74,36 @@ class TodoItem extends Component {
 				>
 					<InputBase 
 						autoFocus
-						className={classes.input}
+						className={classes.text}
 						fullWidth 
 						value={this.state.text}
 						onChange={this.handleChange} />
 				</ClickAwayListener>
 			);
 		} else {
-			body = <div>{todo.text}</div>;
+			body = (
+				<Typography 
+					className={classnames(todo.complete ? classes.through : '', classes.text)}
+					onClick={() => this.props.handleSelect(todo.id)}
+				>
+					{todo.text}
+				</Typography>
+			);
 		}
 
 		return (
 			<Grid container className={classes.root}
-				onClick={() => this.props.handleSelect(todo.id)} 
 				alignItems='center' 
 				onMouseEnter={() => this.setHover(true)}
 				onMouseLeave={() => this.setHover(false)}
 			>
 				<Grid item>
-					<Checkbox className={classes.checkbox} disableRipple/>
+					<Checkbox 
+						className={classes.checkbox} 
+						disableRipple 
+						checked={todo.complete} 
+						onChange={this.handleComplete}
+					/>
 				</Grid>
 				<Grid item xs className={classes.text}>
 					{body}
@@ -96,4 +119,4 @@ class TodoItem extends Component {
 	}
 }
 
-export default connect(null, { deleteTodo, editTodo })(withStyles(styles)(TodoItem));
+export default connect(null, { deleteTodo, editTodo, completeTodo, incompleteTodo })(withStyles(styles)(TodoItem));

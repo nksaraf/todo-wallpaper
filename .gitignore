@@ -1,3 +1,7 @@
 node_modules
 out
 .eslintcache
+__pycache__
+*.pyc
+*.pyo
+_wallapaper_*

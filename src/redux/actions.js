@@ -4,7 +4,10 @@ export const types = {
 	ADD_TODO: 'ADD_TODO',
 	ADD_PROJECT: 'ADD_PROJECT',
 	DELETE_TODO: 'DELETE_TODO',
-	EDIT_TODO: 'EDIT_TODO'
+	EDIT_TODO: 'EDIT_TODO',
+	COMPLETE_TODO: 'COMPLETE_TODO',
+	INCOMPLETE_TODO: 'INCOMPLETE_TODO',
+	DELETE_PROJECT: 'DELETE_PROJECT'
 }
 
 export const readTodotxt = () => {
@@ -47,4 +50,25 @@ export const editTodo = (id, text) => {
 		type: types.EDIT_TODO,
 		payload: { todo_id: id, text }
 	};
+}
+
+export const completeTodo = (id) => {
+	return {
+		type: types.COMPLETE_TODO,
+		payload: { todo_id: id }
+	}
+}
+
+export const incompleteTodo = (id) => {
+	return {
+		type: types.INCOMPLETE_TODO,
+		payload: { todo_id: id }
+	}
+}
+
+export const deleteProject = (project) => {
+	return {
+		type: types.DELETE_PROJECT,
+		payload: { project }
+	}
 }
