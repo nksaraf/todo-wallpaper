@@ -15,6 +15,8 @@ if (isDevMode) {
   require('electron-reload')(__dirname);
 }
 
+
+
 const createTray = () => {
   tray = new Tray(path.join(__dirname, 'logo.png'));
   // tray.setHighlightMode('never');
@@ -53,7 +55,7 @@ const showWindow = () => {
 const createWindow = async () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 400,
+    width: 360,
     height: 600,
     show: false,
     frame: false,
