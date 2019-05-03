@@ -12,11 +12,13 @@ else
   brew install python3
 fi
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 pip3 install Pillow todotxtio attrdict
 
 mkdir -p ~/.todo
-cp assets/* ~/.todo
+cp "$DIR/assets/"* ~/.todo
 touch -a ~/.todo/todo.txt
 touch -a ~/.todo/preferences.json
 
-open assets/desktoppr-0.1.pkg
+open "$DIR/assets/desktoppr-0.1.pkg"
