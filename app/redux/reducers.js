@@ -8,7 +8,7 @@ import { PythonShell } from 'python-shell';
 import child_process from 'child_process';
 import { TodoTxt, TodoTxtItem } from 'jstodotxt';
 import log from 'electron-log';
-import electron from 'electron';
+import electron, { ipcRenderer } from 'electron';
 
 // const initialState = {
 // 	scoreboard: {},
@@ -16,10 +16,11 @@ import electron from 'electron';
 // 	error: null
 // }
 
-const TODOTXT = path.join(os.homedir(), 'todo.txt');
+const preferences = ipcRenderer.sendSync('getPreferences');
+const TODOTXT_PATH = preferences.basic.TODOTXT_PATH;
 
 const readTodotxt = () => {
-  let todotxt = fs.readFileSync(TODOTXT).toString();
+  let todotxt = fs.readFileSync(TODOTXT_PATH).toString();
   let todos = TodoTxt.parse(todotxt);
   todos = splitByProject(todos);
   saveTodotxt(todos);
@@ -35,10 +36,14 @@ const saveTodotxt = (todos) => {
       } 
     }
   }
-  fs.writeFile(TODOTXT, TodoTxt.render(flat_todos), (err) => {
-    child_process.execFile(path.join(electron.remote.app.getAppPath(), 'todo_wallpaper', 'wallpaper.sh'), 
-      (error, stdout, stderr) => { if (error) log.error(error); });
+  fs.writeFile(TODOTXT_PATH, TodoTxt.render(flat_todos), (err) => {
+    makeWallpaper();
   });
+}
+
+const makeWallpaper = () => {
+  child_process.execFile(path.join(electron.remote.app.getAppPath(), 'todo_wallpaper', 'wallpaper.sh'), 
+    (error, stdout, stderr) => { if (error) log.error(error); });
 }
 
 const splitByProject = (todos) => {
@@ -190,6 +195,11 @@ function todos(state={ default: [] }, action) {
 
     case types.DELETE_PROJECT:
       return deleteProject(state, action.payload.project)
+
+    case types.MAKE_WALLPAPER: {
+      makeWallpaper();
+      return state;
+    }
 
     default:
       return state;

@@ -7,7 +7,8 @@ export const types = {
 	EDIT_TODO: 'EDIT_TODO',
 	COMPLETE_TODO: 'COMPLETE_TODO',
 	INCOMPLETE_TODO: 'INCOMPLETE_TODO',
-	DELETE_PROJECT: 'DELETE_PROJECT'
+	DELETE_PROJECT: 'DELETE_PROJECT',
+	MAKE_WALLPAPER: 'MAKE_WALLPAPER'
 }
 
 export const readTodotxt = () => {
@@ -70,5 +71,11 @@ export const deleteProject = (project) => {
 	return {
 		type: types.DELETE_PROJECT,
 		payload: { project }
+	}
+}
+
+export const makeWallpaper = () => {
+	return {
+		type: types.MAKE_WALLPAPER
 	}
 }

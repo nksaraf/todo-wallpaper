@@ -3,9 +3,22 @@ import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-insta
 // import { enableLiveReload } from 'electron-compile';
 import log from 'electron-log';
 import path from 'path';
+import fs from 'fs';
+import os from 'os';
 import fixPath from 'fix-path';
+import preferences from './preferences';
+import child_process from 'child_process';
+import electron from 'electron';
 
 fixPath();
+
+const todoDir = path.join(os.homedir(), '.todo');
+
+if (!fs.existsSync(path.join(todoDir, 'todo.txt'))) {
+  let stdout = child_process.execFileSync(path.join(electron.app.getAppPath(), 'install.sh'));
+  console.log(stdout);
+}
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -18,12 +31,12 @@ if (isDevMode) {
   require('electron-reload')(__dirname);
 }
 
-
-
 const createTray = () => {
-  tray = new Tray(path.join(__dirname, 'logo.png'));
+  tray = new Tray(path.join(__dirname, '../assets/logo.png'));
   let menu = Menu.buildFromTemplate([
+    { click: (item, bWindow, event) => preferences.show(), label: 'Preferences' },
     { role: 'quit' }
+  
   ]);
   // tray.setHighlightMode('never');
 

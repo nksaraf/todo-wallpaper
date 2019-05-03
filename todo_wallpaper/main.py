@@ -2,11 +2,13 @@
 
 from functools import partial
 from manager import TodoManager
-from config import config
+from preferences import preferences
 from wallpaper import make_wallpaper
 import sys
+import os
 
 if __name__ == '__main__':
-	manager = TodoManager(config.TODOTXT_PATH, callback=partial(make_wallpaper, config.SOURCE_IMAGE))
-	manager.do('nothing')
-	sys.stdout.flush()
+	if os.path.exists(preferences.basic.TODOTXT_PATH) and os.path.exists(preferences.basic.SOURCE_IMAGE):
+		manager = TodoManager(preferences.basic.TODOTXT_PATH, callback=partial(make_wallpaper, preferences.basic.SOURCE_IMAGE))
+		manager.do('nothing')
+		sys.stdout.flush()

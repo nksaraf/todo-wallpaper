@@ -57,6 +57,7 @@ class TodoItem extends Component {
 		} else {
 			this.props.incompleteTodo(this.props.todo.id);
 		}
+		this.forceUpdate();
 	}
 
 	render() {
@@ -68,7 +69,9 @@ class TodoItem extends Component {
 		if (selected) {
 			body = (
 				<ClickAwayListener onClickAway={() => {
-						this.props.editTodo(todo.id, this.state.text);
+						if (todo.text !== this.state.text) {
+							this.props.editTodo(todo.id, this.state.text);
+						}
 						this.props.handleSelect('');
 					}}
 				>
@@ -93,7 +96,8 @@ class TodoItem extends Component {
 
 		return (
 			<Grid container className={classes.root}
-				alignItems='center' 
+				alignItems='center'
+
 				onMouseEnter={() => this.setHover(true)}
 				onMouseLeave={() => this.setHover(false)}
 			>

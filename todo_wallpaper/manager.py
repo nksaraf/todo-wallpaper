@@ -41,5 +41,5 @@ class TodoManager:
 	# 	self.taskgroups[group_index]["title"] = title
 
 if __name__ == '__main__':
-	from config import config
-	manager = TodoManager(config.TODOTXT_PATH)
+	from preferences import preferences
+	manager = TodoManager(preferences.basic.TODOTXT_PATH)

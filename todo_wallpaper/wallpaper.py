@@ -2,7 +2,9 @@ from PIL import Image, ImageDraw, ImageFont
 import subprocess
 import random
 import os
-from config import config
+
+from preferences import preferences
+config = preferences.wallpaper
 
 def flat(*nums):
 	"""Build a tuple of ints from float or integer arguments. Useful because 
@@ -50,8 +52,8 @@ def cropped_thumbnail(img, size):
 	return img.resize(target.size, Image.ANTIALIAS)
 
 def save_wallpaper(img):
-	os.system('rm {}'.format(config.WALLPAPER_WILDCARD))
-	path = config.WALLPAPER_PATH.format(random.randint(0, 1000))
+	os.system('rm {}'.format(config.WILDCARD))
+	path = config.PATH.format(random.randint(0, 1000))
 	img.save(path)
 	print(path)
 	return path
@@ -111,7 +113,7 @@ def add_todos(draw, todos, location, font):
 	v_offset = 0
 	for i, todo in enumerate(todos):
 		height = add_todo(draw, todo, (location[0], location[1] + v_offset), font)
-		v_offset += height + config.TASK_OFFSET
+		v_offset += height + config.TODO_OFFSET
 	return v_offset
 
 def add_title(draw, title, location, font):
@@ -131,8 +133,8 @@ def add_title(draw, title, location, font):
 
 def add_todo_group(draw, title, todos, location, font):
 	add_title(draw, title.title(), location, font)
-	offset = add_todos(draw, todos, (location[0], location[1] + config.FIRST_TASK_OFFSET), font)
-	return config.FIRST_TASK_OFFSET + offset
+	offset = add_todos(draw, todos, (location[0], location[1] + config.FIRST_ITEM_OFFSET), font)
+	return config.FIRST_ITEM_OFFSET + offset
 
 def add_todo_groups(draw, todo_groups, location, font):
 	offset = 0
@@ -144,18 +146,18 @@ def add_todo_groups(draw, todo_groups, location, font):
 
 def edit(img, todo_groups, font):
 	draw = ImageDraw.Draw(img)
-	add_todo_groups(draw, todo_groups, config.TOP_LEFT, font)
+	add_todo_groups(draw, todo_groups, (config.START_POSITION.X, config.START_POSITION.Y), font)
 	return img
 
 def make_wallpaper(source_path, todo_manager):
 	img = Image.open(source_path)
 	font = ImageFont.truetype(font=config.FONT_PATH, size=config.FONT_SIZE)
-	cropped_img = cropped_thumbnail(img, config.WALLPAPER_SIZE)
+	cropped_img = cropped_thumbnail(img, (config.SIZE.WIDTH, config.SIZE.HEIGHT))
 	wallpaper = edit(cropped_img, todo_manager.projects, font)
 	wallpaper_path = save_wallpaper(wallpaper)
 	return wallpaper_path
 
 if __name__ == '__main__':
 	import manager
-	path = make_wallpaper("test.jpg", manager.TodoManager(config.TODOTXT_PATH))
+	path = make_wallpaper(preferences.basic.SOURCE_IMAGE, manager.TodoManager(preferences.basic.TODOTXT_PATH))
 	set_desktop_wallpaper(path)
